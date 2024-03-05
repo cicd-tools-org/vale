@@ -1,0 +1,17 @@
+basename
+cron
+debian
+fstab
+gettext
+grep
+linux
+makefile
+makefiles
+rsync
+sudo
+syslog
+systemd
+tmp
+ubuntu
+udevadm
+umask
