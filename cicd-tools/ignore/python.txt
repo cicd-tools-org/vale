@@ -1,0 +1,13 @@
+__pycache__
+abc
+docstring
+docstrings
+ivar
+ivars
+mypy
+pip
+pkg_resources
+pre-commit
+pypi
+readthedocs
+yapf
