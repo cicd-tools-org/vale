@@ -1,0 +1,69 @@
+---
+default_install_hook_types:
+  - pre-commit
+  - commit-msg
+repos:
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.22.0
+    hooks:
+      - id: check-jsonschema
+        name: check-github-workflow-push-schema
+        files: "^\\.github/config/workflows/workflow-push.json$"
+        args:
+          - "--schemafile"
+          - ".github/config/schemas/workflows/workflow-push.json"
+        stages: [pre-commit]
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.2.2
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+  - repo: https://github.com/cicd-tools-org/pre-commit.git
+    rev: 0.5.0
+    hooks:
+      - id: format-shell
+        args:
+          - "-w"
+          - "--indent=2"
+          - "-ci"
+          - "-sr"
+      - id: format-toml
+      - id: git-conflict-markers
+      - id: lint-github-workflow-header
+      - id: lint-github-workflow
+      - id: lint-markdown
+      - id: lint-shell
+      - id: security-credentials
+      - id: spelling-commit-message
+      - id: spelling-markdown
+      - id: spelling-vale-vocab
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.32.0
+    hooks:
+      - id: yamllint
+        args:
+          - "-c"
+          - "./.yamllint.yml"
+        stages: [commit]
+  - repo: local
+    hooks:
+      - id: bundle-current-version
+        name: "bundle-current-version"
+        entry: bash -c "./scripts/package.sh -b $(poetry version --short)"
+        language: system
+        files: "^cicd-tools/"
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: format-vale-style
+        name: "format-vale-style"
+        entry: /bin/bash -c 'for FILE in "$@"; do sort -u -o ${FILE} ${FILE}; done' --
+        files: "^cicd-tools/ignore/.+\\.txt$"
+        language: system
+        stages: [pre-commit]
+      - id: update-python
+        name: "update-python"
+        entry: ./scripts/update-python.sh
+        language: system
+        stages: [manual]
+        pass_filenames: false
+        always_run: true
